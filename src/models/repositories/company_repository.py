@@ -39,3 +39,11 @@ class CompanyRepository(ICompanyRepository):
             company = session.scalar(stmt)
 
             return company
+
+    def update_balance(self, company_id: int, value: float) -> None:
+        with self.__db_connection as session:
+            company = session.get(CompanyTable, company_id)
+
+            if company is not None:
+                company.balance = value
+                session.commit()

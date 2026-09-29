@@ -10,5 +10,9 @@ class IIndividualRepository(ABC):
         pass
 
     @abstractmethod
-    def get_company(self, company_id: int) -> IndividualTable | None:
+    def get_company(self, individual_id: int) -> IndividualTable | None:
+        pass
+
+    @abstractmethod
+    def update_balance(self, individual_id: int, value: float) -> None:
         pass

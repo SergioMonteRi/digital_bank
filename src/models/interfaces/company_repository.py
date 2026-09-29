@@ -12,3 +12,7 @@ class ICompanyRepository(ABC):
     @abstractmethod
     def get_company(self, company_id: int) -> CompanyTable | None:
         pass
+
+    @abstractmethod
+    def update_balance(self, company_id: int, value: float) -> None:
+        pass
