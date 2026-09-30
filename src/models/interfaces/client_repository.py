@@ -1,23 +1,24 @@
 from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 from uuid import UUID
 
 from src.enum.client_type import ClientType
-from src.models.entities.company import CompanyTable
 from src.models.entities.transaction import TransactionTable
-from src.schemas.create_company_schema import CreateCompanySchema
+
+Client = TypeVar("Client")
 
 
-class ICompanyRepository(ABC):
+class ClientRepositoryInterface(ABC, Generic[Client]):
     @abstractmethod
-    def create_company(self, company: CreateCompanySchema) -> CompanyTable:
+    def create(self, client) -> Client:
         pass
 
     @abstractmethod
-    def get_company(self, company_id: UUID) -> CompanyTable | None:
+    def get(self, client_id: UUID) -> Client | None:
         pass
 
     @abstractmethod
-    def update_balance(self, company_id: UUID, value: float) -> None:
+    def update_balance(self, client_id: UUID, value: float) -> None:
         pass
 
     @abstractmethod

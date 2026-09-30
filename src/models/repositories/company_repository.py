@@ -7,23 +7,23 @@ from src.database.connection import DBConnectionHandler
 from src.enum.client_type import ClientType
 from src.models.entities.company import CompanyTable
 from src.models.entities.transaction import TransactionTable
-from src.models.interfaces.company_repository import ICompanyRepository
+from src.models.interfaces.client_repository import ClientRepositoryInterface
 from src.schemas.create_company_schema import CreateCompanySchema
 
 
-class CompanyRepository(ICompanyRepository):
+class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
     def __init__(self, db_connection: DBConnectionHandler) -> None:
         self.__db_connection = db_connection
 
-    def create_company(self, company: CreateCompanySchema) -> CompanyTable:
+    def create(self, client: CreateCompanySchema) -> CompanyTable:
         with self.__db_connection as session:
             try:
                 company_data = CompanyTable(
-                    monthly_revenue=company.monthly_revenue,
-                    company_name=company.company_name,
-                    phone=company.phone,
-                    email=company.email,
-                    category=company.category,
+                    monthly_revenue=client.monthly_revenue,
+                    company_name=client.company_name,
+                    phone=client.phone,
+                    email=client.email,
+                    category=client.category,
                     balance=0,
                 )
 
@@ -36,17 +36,17 @@ class CompanyRepository(ICompanyRepository):
                 session.rollback()
                 raise
 
-    def get_company(self, company_id: UUID) -> CompanyTable | None:
+    def get(self, client_id: UUID) -> CompanyTable | None:
         with self.__db_connection as session:
-            stmt = select(CompanyTable).where(CompanyTable.id == company_id)
+            stmt = select(CompanyTable).where(CompanyTable.id == client_id)
 
             company = session.scalar(stmt)
 
             return company
 
-    def update_balance(self, company_id: UUID, value: float) -> None:
+    def update_balance(self, client_id: UUID, value: float) -> None:
         with self.__db_connection as session:
-            company = session.get(CompanyTable, company_id)
+            company = session.get(CompanyTable, client_id)
 
             if company is not None:
                 company.balance = value
