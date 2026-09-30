@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from src.models.entities.company import CompanyTable
 from src.schemas.create_company_schema import CreateCompanySchema
@@ -10,9 +11,9 @@ class ICompanyRepository(ABC):
         pass
 
     @abstractmethod
-    def get_company(self, company_id: int) -> CompanyTable | None:
+    def get_company(self, company_id: UUID) -> CompanyTable | None:
         pass
 
     @abstractmethod
-    def update_balance(self, company_id: int, value: float) -> None:
+    def update_balance(self, company_id: UUID, value: float) -> None:
         pass

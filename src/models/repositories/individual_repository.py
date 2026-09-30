@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -41,7 +43,7 @@ class IndividualRepository(IIndividualRepository):
 
             return company
 
-    def update_balance(self, individual_id: int, value: float) -> None:
+    def update_balance(self, individual_id: UUID, value: float) -> None:
         with self.__db_connection as session:
             company = session.get(IndividualTable, individual_id)
 

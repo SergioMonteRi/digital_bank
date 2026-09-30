@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -32,7 +34,7 @@ class CompanyRepository(ICompanyRepository):
                 session.rollback()
                 raise
 
-    def get_company(self, company_id: int) -> CompanyTable | None:
+    def get_company(self, company_id: UUID) -> CompanyTable | None:
         with self.__db_connection as session:
             stmt = select(CompanyTable).where(CompanyTable.id == company_id)
 
@@ -40,7 +42,7 @@ class CompanyRepository(ICompanyRepository):
 
             return company
 
-    def update_balance(self, company_id: int, value: float) -> None:
+    def update_balance(self, company_id: UUID, value: float) -> None:
         with self.__db_connection as session:
             company = session.get(CompanyTable, company_id)
 
