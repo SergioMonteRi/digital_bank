@@ -1,6 +1,8 @@
 from uuid import UUID
 
+from src.enum.client_type import ClientType
 from src.models.entities.company import CompanyTable
+from src.models.entities.transaction import TransactionTable
 from src.models.interfaces.client import ClientInterface
 from src.models.interfaces.company_repository import ICompanyRepository
 from src.schemas.create_company_schema import CreateCompanySchema
@@ -42,5 +44,5 @@ class CompanyService(ClientInterface[CompanyTable]):
 
         self.update_balance(client_id, new_balance)
 
-    def statement(self, client_id):
-        return super().statement(client_id)
+    def statement(self, client_id: UUID) -> list[TransactionTable]:
+        return self.__company_repository.get_statement(client_id, ClientType.COMPANY)
