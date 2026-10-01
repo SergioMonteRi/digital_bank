@@ -10,11 +10,11 @@ Client = TypeVar("Client")
 
 class ClientRepositoryInterface(ABC, Generic[Client]):
     @abstractmethod
-    def create(self, client) -> Client:
+    def create_client(self, client) -> Client:
         pass
 
     @abstractmethod
-    def get(self, client_id: UUID) -> Client | None:
+    def get_client(self, client_id: UUID) -> Client | None:
         pass
 
     @abstractmethod

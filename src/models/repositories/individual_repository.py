@@ -15,7 +15,7 @@ class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
     def __init__(self, db_connection: DBConnectionHandler) -> None:
         self.__db_connection = db_connection
 
-    def create(self, client: CreateIndividualSchema) -> IndividualTable:
+    def create_client(self, client: CreateIndividualSchema) -> IndividualTable:
         with self.__db_connection as session:
             try:
                 individual_data = IndividualTable(
@@ -37,7 +37,7 @@ class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
                 session.rollback()
                 raise
 
-    def get(self, client_id: UUID) -> IndividualTable | None:
+    def get_client(self, client_id: UUID) -> IndividualTable | None:
         with self.__db_connection as session:
             stmt = select(IndividualTable).where(IndividualTable.id == client_id)
 

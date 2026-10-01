@@ -15,7 +15,7 @@ class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
     def __init__(self, db_connection: DBConnectionHandler) -> None:
         self.__db_connection = db_connection
 
-    def create(self, client: CreateCompanySchema) -> CompanyTable:
+    def create_client(self, client: CreateCompanySchema) -> CompanyTable:
         with self.__db_connection as session:
             try:
                 company_data = CompanyTable(
@@ -36,7 +36,7 @@ class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
                 session.rollback()
                 raise
 
-    def get(self, client_id: UUID) -> CompanyTable | None:
+    def get_client(self, client_id: UUID) -> CompanyTable | None:
         with self.__db_connection as session:
             stmt = select(CompanyTable).where(CompanyTable.id == client_id)
 

@@ -15,10 +15,10 @@ class CompanyService(ClientInterface[CompanyTable]):
         self.__company_repository = company_repository
 
     def create_company(self, company: CreateCompanySchema) -> CompanyTable | None:
-        return self.__company_repository.create(company)
+        return self.__company_repository.create_client(company)
 
-    def get_client(self, client_id: UUID) -> CompanyTable | None:
-        return self.__company_repository.get(client_id)
+    def get_company(self, client_id: UUID) -> CompanyTable | None:
+        return self.__company_repository.get_client(client_id)
 
     def update_balance(self, company_id: UUID, value: float) -> None:
         self.__company_repository.update_balance(company_id, value)
@@ -27,7 +27,7 @@ class CompanyService(ClientInterface[CompanyTable]):
         return monthly_revenue * self.COMPANY_WITHDRAW_LIMIT
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
-        company = self.get_client(client_id)
+        company = self.get_company(client_id)
 
         if company is None:
             raise Exception
