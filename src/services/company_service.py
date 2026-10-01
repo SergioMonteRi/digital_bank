@@ -28,8 +28,13 @@ class CompanyService(CompanyServiceInterface):
     def create_client(self, client_data: CreateCompanySchema) -> CompanyTable:
         return self.__company_repository.create_client(client_data)
 
-    def get_client(self, client_id: UUID) -> CompanyTable | None:
-        return self.__company_repository.get_client(client_id)
+    def get_client(self, client_id: UUID) -> CompanyTable:
+        company = self.__company_repository.get_client(client_id)
+
+        if company is None:
+            raise CompanyNotFound
+
+        return company
 
     def update_balance(self, client_id: UUID, amount: float) -> None:
         self.__company_repository.update_balance(client_id, amount)
@@ -39,9 +44,6 @@ class CompanyService(CompanyServiceInterface):
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
         company = self.get_client(client_id)
-
-        if company is None:
-            raise CompanyNotFound
 
         if amount > company.balance:
             raise InsufficientBalance

@@ -14,5 +14,5 @@ class GetCompanyController(GetCompanyControllerInterface):
     ):
         self.__company_service = company_service
 
-    def get_company(self, company_id: UUID) -> CompanyTable | None:
+    def get_company(self, company_id: UUID) -> CompanyTable:
         return self.__company_service.get_client(company_id)
