@@ -4,6 +4,7 @@ from uuid import UUID, uuid7
 from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
+from src.custom_types.utc_datetime import UTCDateTime
 from src.custom_types.uuid import UUIDType
 from src.database.base import Base
 from src.enum.client_type import ClientType
@@ -29,4 +30,6 @@ class TransactionTable(Base):
 
     amount: Mapped[float] = mapped_column(nullable=False)
 
-    created_at: Mapped[datetime] = mapped_column(default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(), default=utc_now, nullable=False
+    )
