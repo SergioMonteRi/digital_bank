@@ -1,32 +1,40 @@
 from uuid import UUID
 
 from src.enum.client_type import ClientType
+from src.enum.transaction_type import TransactionType
 from src.exceptions.domain.individual_not_found import IndividualNotFound
 from src.exceptions.domain.insufficient_balance import InsufficientBalance
 from src.exceptions.domain.withdrawal_limit_exceeded import WithdrawalLimitExceeded
 from src.models.entities.individual import IndividualTable
 from src.models.entities.transaction import TransactionTable
-from src.models.interfaces.client import ClientInterface
 from src.models.interfaces.client_repository import ClientRepositoryInterface
+from src.models.interfaces.transaction_repository import TransactionRepositoryInterface
 from src.schemas.create_individual_schema import CreateIndividualSchema
+from src.schemas.create_transaction_schema import CreateTransactionSchema
+from src.services.interfaces.individual_service import (
+    IndividualServiceInterface,
+)
 
 
-class IndividualService(ClientInterface[IndividualTable]):
+class IndividualService(IndividualServiceInterface):
     INDIVIDUAL_WITHDRAW_LIMIT = 0.7
 
-    def __init__(self, individual_repository: ClientRepositoryInterface):
+    def __init__(
+        self,
+        individual_repository: ClientRepositoryInterface,
+        transaction_repository: TransactionRepositoryInterface,
+    ):
         self.__individual_repository = individual_repository
+        self.__transaction_repository = transaction_repository
 
-    def create_individual(
-        self, individual: CreateIndividualSchema
-    ) -> IndividualTable | None:
-        return self.__individual_repository.create_client(individual)
+    def create_client(self, client_data: CreateIndividualSchema) -> IndividualTable:
+        return self.__individual_repository.create_client(client_data)
 
     def get_individual(self, client_id: UUID) -> IndividualTable | None:
         return self.__individual_repository.get_client(client_id)
 
-    def update_balance(self, company_id: UUID, value: float) -> None:
-        self.__individual_repository.update_balance(company_id, value)
+    def update_balance(self, client_id: UUID, balance: float) -> None:
+        self.__individual_repository.update_balance(client_id, balance)
 
     def calculate_withdraw_limit(self, monthly_revenue: float) -> float:
         return monthly_revenue * self.INDIVIDUAL_WITHDRAW_LIMIT
@@ -49,5 +57,16 @@ class IndividualService(ClientInterface[IndividualTable]):
 
         self.update_balance(client_id, new_balance)
 
+        transaction_data = CreateTransactionSchema(
+            client_id=individual.id,
+            client_type=ClientType.INDIVIDUAL,
+            transaction_type=TransactionType.WITHDRAW,
+            amount=amount,
+        )
+
+        self.__transaction_repository.create_transaction(transaction_data)
+
     def statement(self, client_id: UUID) -> list[TransactionTable]:
-        return self.__individual_repository.get_statement(client_id, ClientType.COMPANY)
+        return self.__transaction_repository.get_statement(
+            client_id, ClientType.INDIVIDUAL
+        )
