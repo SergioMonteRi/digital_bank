@@ -1,2 +1,5 @@
-class WithdrawalLimitExceeded(Exception):
+from .domain_error import DomainError
+
+
+class WithdrawalLimitExceeded(DomainError):
     pass
