@@ -14,5 +14,5 @@ class GetIndividualController(GetIndividualControllerInterface):
     ):
         self.__individual_service = individual_service
 
-    def get_individual(self, individual_id: UUID) -> IndividualTable | None:
+    def get_individual(self, individual_id: UUID) -> IndividualTable:
         return self.__individual_service.get_client(individual_id)
