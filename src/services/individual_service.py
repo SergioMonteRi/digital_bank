@@ -69,6 +69,8 @@ class IndividualService(IndividualServiceInterface):
         self.__transaction_repository.create_transaction(transaction_data)
 
     def statement(self, client_id: UUID) -> list[TransactionTable]:
+        self.get_client(client_id)
+
         return self.__transaction_repository.get_statement(
             client_id, ClientType.INDIVIDUAL
         )

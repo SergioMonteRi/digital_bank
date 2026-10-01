@@ -39,14 +39,14 @@ class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
         with self.__db_connection as session:
             stmt = select(IndividualTable).where(IndividualTable.id == client_id)
 
-            company = session.scalar(stmt)
+            individual = session.scalar(stmt)
 
-            return company
+            return individual
 
     def update_balance(self, client_id: UUID, value: float) -> None:
         with self.__db_connection as session:
-            company = session.get(IndividualTable, client_id)
+            individual = session.get(IndividualTable, client_id)
 
-            if company is not None:
-                company.balance = value
+            if individual is not None:
+                individual.balance = value
                 session.commit()
