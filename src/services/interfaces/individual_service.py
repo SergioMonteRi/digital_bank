@@ -1,12 +1,13 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from uuid import UUID
 
 from src.models.entities.individual import IndividualTable
-from src.models.entities.transaction import TransactionTable
 from src.schemas.create_individual_schema import CreateIndividualSchema
 
+from .account_operations import AccountOperationsInterface
 
-class IndividualServiceInterface(ABC):
+
+class IndividualServiceInterface(AccountOperationsInterface):
     @abstractmethod
     def create_client(
         self,
@@ -18,16 +19,3 @@ class IndividualServiceInterface(ABC):
         self,
         client_id: UUID,
     ) -> IndividualTable | None: ...
-
-    @abstractmethod
-    def withdraw(
-        self,
-        client_id: UUID,
-        amount: float,
-    ) -> None: ...
-
-    @abstractmethod
-    def statement(
-        self,
-        client_id: UUID,
-    ) -> list[TransactionTable]: ...

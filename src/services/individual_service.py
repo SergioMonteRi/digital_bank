@@ -30,7 +30,7 @@ class IndividualService(IndividualServiceInterface):
     def create_client(self, client_data: CreateIndividualSchema) -> IndividualTable:
         return self.__individual_repository.create_client(client_data)
 
-    def get_individual(self, client_id: UUID) -> IndividualTable | None:
+    def get_client(self, client_id: UUID) -> IndividualTable | None:
         return self.__individual_repository.get_client(client_id)
 
     def update_balance(self, client_id: UUID, balance: float) -> None:
@@ -40,7 +40,7 @@ class IndividualService(IndividualServiceInterface):
         return monthly_revenue * self.INDIVIDUAL_WITHDRAW_LIMIT
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
-        individual = self.get_individual(client_id)
+        individual = self.get_client(client_id)
 
         if individual is None:
             raise IndividualNotFound

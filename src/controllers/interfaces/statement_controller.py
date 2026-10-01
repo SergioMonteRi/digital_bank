@@ -4,6 +4,6 @@ from uuid import UUID
 from src.models.entities.transaction import TransactionTable
 
 
-class IIndividualStatementController(ABC):
+class StatementControllerInterface(ABC):
     @abstractmethod
     def get_statement(self, client_id: UUID) -> list[TransactionTable]: ...

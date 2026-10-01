@@ -1,12 +1,13 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from uuid import UUID
 
 from src.models.entities.company import CompanyTable
-from src.models.entities.transaction import TransactionTable
 from src.schemas.create_company_schema import CreateCompanySchema
 
+from .account_operations import AccountOperationsInterface
 
-class CompanyServiceInterface(ABC):
+
+class CompanyServiceInterface(AccountOperationsInterface):
     @abstractmethod
     def create_client(
         self,
@@ -18,16 +19,3 @@ class CompanyServiceInterface(ABC):
         self,
         client_id: UUID,
     ) -> CompanyTable | None: ...
-
-    @abstractmethod
-    def withdraw(
-        self,
-        client_id: UUID,
-        amount: float,
-    ) -> None: ...
-
-    @abstractmethod
-    def statement(
-        self,
-        client_id: UUID,
-    ) -> list[TransactionTable]: ...

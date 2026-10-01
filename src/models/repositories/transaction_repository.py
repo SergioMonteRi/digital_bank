@@ -34,9 +34,13 @@ class TransactionRepository(TransactionRepositoryInterface):
 
     def get_statement(self, client_id: UUID, client_type: ClientType):
         with self.__db_connection as session:
-            stmt = select(TransactionTable).where(
-                TransactionTable.client_id == client_id,
-                TransactionTable.client_type == client_type,
+            stmt = (
+                select(TransactionTable)
+                .where(
+                    TransactionTable.client_id == client_id,
+                    TransactionTable.client_type == client_type,
+                )
+                .order_by(TransactionTable.created_at.desc())
             )
 
             statements = session.scalars(stmt).all()
