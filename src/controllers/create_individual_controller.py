@@ -1,12 +1,12 @@
 from src.controllers.interfaces.create_individual_controller import (
-    ICreateIndividualController,
+    CreateIndividualControllerInterface,
 )
 from src.models.entities.individual import IndividualTable
 from src.schemas.create_individual_schema import CreateIndividualSchema
 from src.services.interfaces.individual_service import IndividualServiceInterface
 
 
-class CreateIndividualController(ICreateIndividualController):
+class CreateIndividualController(CreateIndividualControllerInterface):
     def __init__(
         self,
         individual_service: IndividualServiceInterface,

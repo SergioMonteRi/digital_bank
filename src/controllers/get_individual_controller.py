@@ -1,13 +1,13 @@
 from uuid import UUID
 
 from src.controllers.interfaces.get_individual_controller import (
-    IGetIndividualController,
+    GetIndividualControllerInterface,
 )
 from src.models.entities.individual import IndividualTable
 from src.services.interfaces.individual_service import IndividualServiceInterface
 
 
-class GetIndividualController(IGetIndividualController):
+class GetIndividualController(GetIndividualControllerInterface):
     def __init__(
         self,
         individual_service: IndividualServiceInterface,

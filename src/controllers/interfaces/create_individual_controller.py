@@ -4,7 +4,7 @@ from src.models.entities.individual import IndividualTable
 from src.schemas.create_individual_schema import CreateIndividualSchema
 
 
-class ICreateIndividualController(ABC):
+class CreateIndividualControllerInterface(ABC):
     @abstractmethod
     def create_individual(
         self, individual_data: CreateIndividualSchema
