@@ -15,7 +15,7 @@ class DBConnectionHandler:
         return self.__engine
 
     def __enter__(self):
-        session_maker = sessionmaker(bind=self.__engine)
+        session_maker = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = session_maker()
 
         return self.__session

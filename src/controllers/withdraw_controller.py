@@ -9,7 +9,7 @@ class WithdrawController(WithdrawControllerInterface):
         self,
         client_service: AccountOperationsInterface,
     ):
-        self.client_service = client_service
+        self.__client_service = client_service
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
-        self.client_service.withdraw(client_id, amount)
+        self.__client_service.withdraw(client_id, amount)
