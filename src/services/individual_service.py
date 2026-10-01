@@ -1,6 +1,9 @@
 from uuid import UUID
 
 from src.enum.client_type import ClientType
+from src.exceptions.domain.individual_not_found import IndividualNotFound
+from src.exceptions.domain.insufficient_balance import InsufficientBalance
+from src.exceptions.domain.withdrawal_limit_exceeded import WithdrawalLimitExceeded
 from src.models.entities.individual import IndividualTable
 from src.models.entities.transaction import TransactionTable
 from src.models.interfaces.client import ClientInterface
@@ -32,15 +35,15 @@ class IndividualService(ClientInterface[IndividualTable]):
         individual = self.get_individual(client_id)
 
         if individual is None:
-            raise Exception
+            raise IndividualNotFound
 
         if amount > individual.balance:
-            raise Exception
+            raise InsufficientBalance
 
         withdraw_limit = self.calculate_withdraw_limit(individual.monthly_income)
 
         if amount > withdraw_limit:
-            raise Exception
+            raise WithdrawalLimitExceeded
 
         new_balance = individual.balance - amount
 

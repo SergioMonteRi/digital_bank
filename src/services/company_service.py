@@ -1,6 +1,9 @@
 from uuid import UUID
 
 from src.enum.client_type import ClientType
+from src.exceptions.domain.company_not_found import CompanyNotFound
+from src.exceptions.domain.insufficient_balance import InsufficientBalance
+from src.exceptions.domain.withdrawal_limit_exceeded import WithdrawalLimitExceeded
 from src.models.entities.company import CompanyTable
 from src.models.entities.transaction import TransactionTable
 from src.models.interfaces.client import ClientInterface
@@ -30,15 +33,15 @@ class CompanyService(ClientInterface[CompanyTable]):
         company = self.get_company(client_id)
 
         if company is None:
-            raise Exception
+            raise CompanyNotFound
 
         if amount > company.balance:
-            raise Exception
+            raise InsufficientBalance
 
         withdraw_limit = self.calculate_withdraw_limit(company.monthly_revenue)
 
         if amount > withdraw_limit:
-            raise Exception
+            raise WithdrawalLimitExceeded
 
         new_balance = company.balance - amount
 

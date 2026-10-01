@@ -1,0 +1,2 @@
+class WithdrawalLimitExceeded(Exception):
+    pass

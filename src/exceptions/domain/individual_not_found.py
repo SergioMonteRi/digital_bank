@@ -1,0 +1,2 @@
+class IndividualNotFound(Exception):
+    pass
