@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from pydantic import ValidationError
 
 from src.controllers.interfaces.withdraw_controller import WithdrawControllerInterface
@@ -23,10 +21,7 @@ class WithdrawView(ViewInterface):
         if http_request.body is None:
             raise HttpBadRequestError("Request body is required")
 
-        try:
-            client_id = UUID(str(http_request.param["client_id"]))
-        except ValueError as e:
-            raise HttpBadRequestError("Invalid client id") from e
+        client_id = http_request.param["client_id"]
 
         try:
             withdraw_data = AmountSchema.model_validate(http_request.body)

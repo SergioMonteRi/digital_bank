@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from src.controllers.interfaces.statement_controller import (
     StatementControllerInterface,
 )
@@ -19,10 +17,7 @@ class StatementView(ViewInterface):
         if http_request.param is None or "client_id" not in http_request.param:
             raise HttpBadRequestError("Client id is required")
 
-        try:
-            client_id = UUID(str(http_request.param["client_id"]))
-        except ValueError as e:
-            raise HttpBadRequestError("Invalid client id") from e
+        client_id = http_request.param["client_id"]
 
         transactions = self.__controller.get_statement(client_id=client_id)
 

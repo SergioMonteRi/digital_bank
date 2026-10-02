@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from src.controllers.interfaces.get_individual_controller import (
     GetIndividualControllerInterface,
 )
@@ -19,10 +17,7 @@ class GetIndividualView(ViewInterface):
         if http_request.param is None or "individual_id" not in http_request.param:
             raise HttpBadRequestError("Individual id is required")
 
-        try:
-            individual_id = UUID(str(http_request.param["individual_id"]))
-        except ValueError as e:
-            raise HttpBadRequestError("Invalid individual id") from e
+        individual_id = http_request.param["individual_id"]
 
         individual = self.__controller.get_individual(individual_id=individual_id)
 
