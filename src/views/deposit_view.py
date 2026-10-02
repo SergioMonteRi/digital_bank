@@ -2,7 +2,7 @@ from uuid import UUID
 
 from pydantic import ValidationError
 
-from src.controllers.interfaces.withdraw_controller import WithdrawControllerInterface
+from src.controllers.interfaces.deposit_controller import DepositControllerInterface
 from src.exceptions.http.http_bad_request import HttpBadRequestError
 from src.exceptions.http.http_unprocessable_entity import HttpUnprocessableEntityError
 from src.schemas.amount_schema import AmountSchema
@@ -12,8 +12,8 @@ from .http_types.http_response import HttpResponse
 from .interfaces.view_interface import ViewInterface
 
 
-class WithdrawView(ViewInterface):
-    def __init__(self, controller: WithdrawControllerInterface):
+class DepositView(ViewInterface):
+    def __init__(self, controller: DepositControllerInterface):
         self.__controller = controller
 
     def handle(self, http_request: HttpRequest) -> HttpResponse:
@@ -29,7 +29,7 @@ class WithdrawView(ViewInterface):
             raise HttpBadRequestError("Invalid client id") from e
 
         try:
-            withdraw_data = AmountSchema.model_validate(http_request.body)
+            deposit_data = AmountSchema.model_validate(http_request.body)
         except ValidationError as e:
             errors = e.errors(include_url=False, include_context=False)
 
@@ -37,6 +37,6 @@ class WithdrawView(ViewInterface):
                 message="Invalid request body", errors=errors
             ) from e
 
-        self.__controller.withdraw(client_id, withdraw_data.amount)
+        self.__controller.deposit(client_id, deposit_data.amount)
 
         return HttpResponse(status_code=204, body=None)

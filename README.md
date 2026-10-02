@@ -10,7 +10,7 @@ O que falta para a API funcionar de ponta a ponta.
 
 ### Correções que bloqueiam o fluxo
 
-- [ ] Devolver o `default=utc_now` em `TransactionTable.created_at`. Sem ele, todo saque falha com `IntegrityError` (`created_at` vai `NULL`).
+- [X] Devolver o `default=utc_now` em `TransactionTable.created_at`. Sem ele, todo saque falha com `IntegrityError` (`created_at` vai `NULL`).
 - [ ] Definir como o cliente recebe saldo. Todo cliente nasce com `balance = 0`, então qualquer saque falha com `InsufficientBalance`. Opções: operação de depósito (o `TransactionType.DEPOSIT` já existe) ou saldo inicial no cadastro.
 
 ### Rotas

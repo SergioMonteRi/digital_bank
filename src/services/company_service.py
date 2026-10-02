@@ -42,6 +42,22 @@ class CompanyService(CompanyServiceInterface):
     def calculate_withdraw_limit(self, monthly_revenue: float) -> float:
         return monthly_revenue * self.COMPANY_WITHDRAW_LIMIT
 
+    def deposit(self, client_id: UUID, amount: float) -> None:
+        company = self.get_client(client_id)
+
+        new_balance = company.balance + amount
+
+        self.update_balance(client_id, new_balance)
+
+        transaction_data = CreateTransactionSchema(
+            client_id=company.id,
+            client_type=ClientType.COMPANY,
+            transaction_type=TransactionType.DEPOSIT,
+            amount=amount,
+        )
+
+        self.__transaction_repository.create_transaction(transaction_data)
+
     def withdraw(self, client_id: UUID, amount: float) -> None:
         company = self.get_client(client_id)
 
