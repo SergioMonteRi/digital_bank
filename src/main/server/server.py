@@ -9,6 +9,7 @@ from src.exceptions.handlers.http_error_handler import handle_http_error
 from src.exceptions.handlers.unexpected_error_handler import handle_unexpected_error
 from src.exceptions.handlers.werkzeug_error_handler import handle_werkzeug_error
 from src.exceptions.http.http_error import HttpError
+from src.main.routes.company_routes import company_routes_bp
 from src.main.routes.individual_routes import individual_routes_bp
 
 db_connection_handler.connect_to_db()
@@ -18,6 +19,8 @@ app = Flask(__name__)
 CORS(app)
 
 app.register_blueprint(individual_routes_bp)
+app.register_blueprint(company_routes_bp)
+
 
 app.register_error_handler(HttpError, handle_http_error)
 app.register_error_handler(DomainError, handle_domain_error)

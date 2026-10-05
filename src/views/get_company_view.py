@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from src.controllers.interfaces.get_company_controller import (
     GetCompanyControllerInterface,
 )
@@ -19,10 +17,7 @@ class GetCompanyView(ViewInterface):
         if http_request.param is None or "company_id" not in http_request.param:
             raise HttpBadRequestError("Company id is required")
 
-        try:
-            company_id = UUID(str(http_request.param["company_id"]))
-        except ValueError as e:
-            raise HttpBadRequestError("Invalid company id") from e
+        company_id = http_request.param["company_id"]
 
         company = self.__controller.get_company(company_id=company_id)
 
