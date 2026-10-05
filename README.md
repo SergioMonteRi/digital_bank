@@ -8,36 +8,6 @@ Arquitetura em camadas: **routes → views → controllers → services → repo
 
 O que falta para a API funcionar de ponta a ponta.
 
-### Correções que bloqueiam o fluxo
-
-- [X] Devolver o `default=utc_now` em `TransactionTable.created_at`. Sem ele, todo saque falha com `IntegrityError` (`created_at` vai `NULL`).
-- [X] Definir como o cliente recebe saldo. Todo cliente nasce com `balance = 0`, então qualquer saque falha com `InsufficientBalance`. Opções: operação de depósito (o `TransactionType.DEPOSIT` já existe) ou saldo inicial no cadastro.
-
-### Rotas
-
-- [ ] Adapter Flask → `HttpRequest`/`HttpResponse`
-  - [ ] `body` a partir de `request.get_json(silent=True)` (JSON malformado vira `None` → 400, em vez de erro do Flask)
-  - [ ] `param` a partir de `request.view_args`
-  - [ ] Resposta sem corpo quando `body is None` (o `204` do saque não pode enviar `null`)
-- [ ] Composers/factories que montam repository → service → controller → view para cada rota
-- [ ] Blueprint de individual
-  - [ ] `POST /individuals`
-  - [ ] `GET /individuals/<individual_id>`
-  - [ ] `POST /individuals/<client_id>/withdraw`
-  - [ ] `GET /individuals/<client_id>/statement`
-- [ ] Blueprint de company
-  - [ ] `POST /companies`
-  - [ ] `GET /companies/<company_id>`
-  - [ ] `POST /companies/<client_id>/withdraw`
-  - [ ] `GET /companies/<client_id>/statement`
-- [ ] Registrar os blueprints em `src/main/server/server.py`
-
-> Os nomes dos parâmetros nas rotas precisam bater com o que cada view lê: `individual_id` / `company_id` nas views de get e `client_id` nas de withdraw e statement.
-
-### Banco de dados
-
-- [ ] Automatizar ou documentar a criação das tabelas (`Base.metadata.create_all(engine)` na subida do app, ou `sqlite3 storage.db < sql/schema.sql`)
-
 ### Testes
 
 - [ ] Unitários de services com repositories mockados
