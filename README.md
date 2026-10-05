@@ -10,13 +10,6 @@ O que falta para a API funcionar de ponta a ponta.
 
 ### Testes
 
-- [ ] Unitários de services com repositories mockados
-  - [ ] Saque com sucesso (saldo atualizado e transação criada com o `client_type` certo)
-  - [ ] `IndividualNotFound` / `CompanyNotFound`
-  - [ ] `InsufficientBalance`
-  - [ ] `WithdrawalLimitExceeded` (70% da renda para PF, 90% do faturamento para PJ)
-  - [ ] Extrato de cliente inexistente → not found
-- [ ] Unitários de views com controller mockado (400 / 422 / status de sucesso)
 - [ ] Integração com `app.test_client()` e SQLite em memória, cobrindo todas as rotas
 - [ ] Renomear `src/database/connetion_test.py` → `connection_test.py`
 
