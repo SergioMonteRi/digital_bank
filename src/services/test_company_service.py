@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
@@ -47,10 +48,10 @@ class TestCompanyService:
         company_repository.get_client.assert_called_once_with(client_id)
 
     def test_deposit(self, company_repository, transaction_repository):
-        deposit_amount = 10000
+        deposit_amount = Decimal("10000.00")
 
         client_id = company_repository.get_client.return_value.id
-        company_repository.get_client.return_value.balance = 5000
+        company_repository.get_client.return_value.balance = Decimal("5000.00")
 
         expected_transaction = CreateTransactionSchema(
             client_id=client_id,
@@ -71,7 +72,7 @@ class TestCompanyService:
 
     def test_deposit_client_not_found(self, company_repository, transaction_repository):
         client_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
-        deposit_amount = 10000
+        deposit_amount = Decimal("10000.00")
 
         company_repository.get_client.return_value = None
 
@@ -85,10 +86,10 @@ class TestCompanyService:
         company_repository.apply_transaction.assert_not_called()
 
     def test_withdraw(self, company_repository, transaction_repository):
-        withdraw_amount = 90000
+        withdraw_amount = Decimal("90000.00")
 
         client_id = company_repository.get_client.return_value.id
-        company_repository.get_client.return_value.balance = 100000
+        company_repository.get_client.return_value.balance = Decimal("100000.00")
 
         expected_transaction = CreateTransactionSchema(
             client_id=client_id,
@@ -110,11 +111,13 @@ class TestCompanyService:
     def test_withdraw_insufficient_balance(
         self, company_repository, transaction_repository
     ):
-        withdraw_amount = 5001
+        withdraw_amount = Decimal("5001.00")
 
         client_id = company_repository.get_client.return_value.id
-        company_repository.get_client.return_value.balance = 5000
-        company_repository.get_client.return_value.monthly_revenue = 100000
+        company_repository.get_client.return_value.balance = Decimal("5000.00")
+        company_repository.get_client.return_value.monthly_revenue = Decimal(
+            "100000.00"
+        )
 
         service = CompanyService(company_repository, transaction_repository)
 
@@ -126,11 +129,13 @@ class TestCompanyService:
         company_repository.apply_transaction.assert_not_called()
 
     def test_withdraw_limit_exceeded(self, company_repository, transaction_repository):
-        withdraw_amount = 90001
+        withdraw_amount = Decimal("90001.00")
 
         client_id = company_repository.get_client.return_value.id
-        company_repository.get_client.return_value.balance = 200000
-        company_repository.get_client.return_value.monthly_revenue = 100000
+        company_repository.get_client.return_value.balance = Decimal("200000.00")
+        company_repository.get_client.return_value.monthly_revenue = Decimal(
+            "100000.00"
+        )
 
         service = CompanyService(company_repository, transaction_repository)
 
@@ -145,7 +150,7 @@ class TestCompanyService:
         self, company_repository, transaction_repository
     ):
         client_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
-        withdraw_amount = 10000
+        withdraw_amount = Decimal("10000.00")
 
         company_repository.get_client.return_value = None
 
@@ -188,3 +193,12 @@ class TestCompanyService:
         company_repository.get_client.assert_called_once_with(client_id)
 
         transaction_repository.get_statement.assert_not_called()
+
+    def test_calculate_withdraw_limit_rounds_down(
+        self, company_repository, transaction_repository
+    ):
+        service = CompanyService(company_repository, transaction_repository)
+
+        withdraw_limit = service.calculate_withdraw_limit(Decimal("1000.15"))
+
+        assert withdraw_limit == Decimal("900.13")

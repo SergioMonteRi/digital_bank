@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
@@ -16,15 +17,16 @@ class TestCreateIndividualView:
         individual_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
 
         create_individual_controller.create_individual.return_value = IndividualTable(
+            **{**individual_body, "monthly_income": Decimal("10000.00")},
             id=individual_id,
-            balance=0,
-            **individual_body,
+            balance=Decimal("0.00"),
         )
 
         expected_body = {
-            "id": str(individual_id),
-            "balance": 0,
             **individual_body,
+            "id": str(individual_id),
+            "monthly_income": "10000.00",
+            "balance": "0.00",
         }
 
         view = CreateIndividualView(create_individual_controller)

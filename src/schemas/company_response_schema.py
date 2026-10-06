@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -8,8 +9,8 @@ class CompanyResponseSchema(BaseModel):
 
     id: UUID
     company_name: str
-    monthly_revenue: float
+    monthly_revenue: Decimal
     phone: str
     email: str
     category: str
-    balance: float
+    balance: Decimal

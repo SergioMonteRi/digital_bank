@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
@@ -12,12 +13,12 @@ from .withdraw_view import WithdrawView
 class TestWithdrawView:
     def test_handle(self, withdraw_controller):
         client_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
-        amount = 1000
+        amount = Decimal("1000.50")
 
         view = WithdrawView(withdraw_controller)
 
         response = view.handle(
-            HttpRequest(param={"client_id": client_id}, body={"amount": amount})
+            HttpRequest(param={"client_id": client_id}, body={"amount": 1000.50})
         )
 
         withdraw_controller.withdraw.assert_called_once_with(client_id, amount)
@@ -52,6 +53,7 @@ class TestWithdrawView:
             {"amount": -100},
             {"amount": "not a number"},
             {"amount": float("inf")},
+            {"amount": 10.555},
         ],
     )
     def test_handle_invalid_amount(self, withdraw_controller, body):

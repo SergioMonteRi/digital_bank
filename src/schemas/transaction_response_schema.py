@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -11,5 +12,5 @@ class TransactionResponseSchema(BaseModel):
 
     id: UUID
     transaction_type: TransactionType
-    amount: float
+    amount: Decimal
     created_at: datetime

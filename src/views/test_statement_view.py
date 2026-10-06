@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
@@ -24,7 +25,7 @@ class TestStatementView:
                 client_id=client_id,
                 client_type=ClientType.COMPANY,
                 transaction_type=TransactionType.DEPOSIT,
-                amount=1000,
+                amount=Decimal("1000.00"),
                 created_at=datetime(2026, 10, 5, 12, 0, tzinfo=timezone.utc),
             ),
             TransactionTable(
@@ -32,7 +33,7 @@ class TestStatementView:
                 client_id=client_id,
                 client_type=ClientType.COMPANY,
                 transaction_type=TransactionType.WITHDRAW,
-                amount=300,
+                amount=Decimal("300.00"),
                 created_at=datetime(2026, 10, 5, 13, 30, tzinfo=timezone.utc),
             ),
         ]
@@ -42,13 +43,13 @@ class TestStatementView:
                 {
                     "id": str(deposit_id),
                     "transaction_type": "DEPOSIT",
-                    "amount": 1000,
+                    "amount": "1000.00",
                     "created_at": "2026-10-05T12:00:00Z",
                 },
                 {
                     "id": str(withdraw_id),
                     "transaction_type": "WITHDRAW",
-                    "amount": 300,
+                    "amount": "300.00",
                     "created_at": "2026-10-05T13:30:00Z",
                 },
             ]

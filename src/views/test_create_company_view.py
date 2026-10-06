@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
@@ -16,15 +17,16 @@ class TestCreateCompanyView:
         company_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
 
         create_company_controller.create_company.return_value = CompanyTable(
+            **{**company_body, "monthly_revenue": Decimal("100000.00")},
             id=company_id,
-            balance=0,
-            **company_body,
+            balance=Decimal("0.00"),
         )
 
         expected_body = {
-            "id": str(company_id),
-            "balance": 0,
             **company_body,
+            "id": str(company_id),
+            "monthly_revenue": "100000.00",
+            "balance": "0.00",
         }
 
         view = CreateCompanyView(create_company_controller)

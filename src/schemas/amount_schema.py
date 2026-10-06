@@ -1,5 +1,7 @@
+from decimal import Decimal
+
 from pydantic import BaseModel, Field
 
 
 class AmountSchema(BaseModel):
-    amount: float = Field(gt=0, allow_inf_nan=False)
+    amount: Decimal = Field(gt=0, max_digits=12, decimal_places=2)

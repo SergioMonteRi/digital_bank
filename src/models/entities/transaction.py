@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
+from decimal import Decimal
 from uuid import UUID, uuid7
 
-from sqlalchemy import Enum
+from sqlalchemy import Enum, Numeric
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.custom_types.utc_datetime import UTCDateTime
@@ -28,7 +29,7 @@ class TransactionTable(Base):
         Enum(TransactionType), nullable=False
     )
 
-    amount: Mapped[float] = mapped_column(nullable=False)
+    amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
         UTCDateTime(), default=utc_now, nullable=False

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 from src.controllers.interfaces.deposit_controller import DepositControllerInterface
@@ -11,5 +12,5 @@ class DepositController(DepositControllerInterface):
     ):
         self.__client_service = client_service
 
-    def deposit(self, client_id: UUID, amount: float) -> None:
+    def deposit(self, client_id: UUID, amount: Decimal) -> None:
         self.__client_service.deposit(client_id, amount)

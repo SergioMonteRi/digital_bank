@@ -1,3 +1,4 @@
+from decimal import ROUND_DOWN, Decimal
 from uuid import UUID
 
 from src.enum.client_type import ClientType
@@ -15,7 +16,7 @@ from src.services.interfaces.company_service import CompanyServiceInterface
 
 
 class CompanyService(CompanyServiceInterface):
-    COMPANY_WITHDRAW_LIMIT = 0.9
+    COMPANY_WITHDRAW_LIMIT = Decimal("0.9")
 
     def __init__(
         self,
@@ -36,10 +37,12 @@ class CompanyService(CompanyServiceInterface):
 
         return company
 
-    def calculate_withdraw_limit(self, monthly_revenue: float) -> float:
-        return monthly_revenue * self.COMPANY_WITHDRAW_LIMIT
+    def calculate_withdraw_limit(self, monthly_revenue: Decimal) -> Decimal:
+        return (monthly_revenue * self.COMPANY_WITHDRAW_LIMIT).quantize(
+            exp=Decimal("0.01"), rounding=ROUND_DOWN
+        )
 
-    def deposit(self, client_id: UUID, amount: float) -> None:
+    def deposit(self, client_id: UUID, amount: Decimal) -> None:
         company = self.get_client(client_id)
 
         transaction_data = CreateTransactionSchema(
@@ -51,7 +54,7 @@ class CompanyService(CompanyServiceInterface):
 
         self.__company_repository.apply_transaction(transaction_data)
 
-    def withdraw(self, client_id: UUID, amount: float) -> None:
+    def withdraw(self, client_id: UUID, amount: Decimal) -> None:
         company = self.get_client(client_id)
 
         if amount > company.balance:

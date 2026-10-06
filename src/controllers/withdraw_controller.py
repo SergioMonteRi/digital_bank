@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 from src.controllers.interfaces.withdraw_controller import WithdrawControllerInterface
@@ -11,5 +12,5 @@ class WithdrawController(WithdrawControllerInterface):
     ):
         self.__client_service = client_service
 
-    def withdraw(self, client_id: UUID, amount: float) -> None:
+    def withdraw(self, client_id: UUID, amount: Decimal) -> None:
         self.__client_service.withdraw(client_id, amount)

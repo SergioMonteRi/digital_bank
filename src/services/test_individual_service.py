@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
@@ -47,10 +48,10 @@ class TestIndividualService:
         individual_repository.get_client.assert_called_once_with(client_id)
 
     def test_deposit(self, individual_repository, transaction_repository):
-        deposit_amount = 1000
+        deposit_amount = Decimal("1000.00")
 
         client_id = individual_repository.get_client.return_value.id
-        individual_repository.get_client.return_value.balance = 500
+        individual_repository.get_client.return_value.balance = Decimal("500.00")
 
         expected_transaction = CreateTransactionSchema(
             client_id=client_id,
@@ -73,7 +74,7 @@ class TestIndividualService:
         self, individual_repository, transaction_repository
     ):
         client_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
-        deposit_amount = 1000
+        deposit_amount = Decimal("1000.00")
 
         individual_repository.get_client.return_value = None
 
@@ -87,11 +88,13 @@ class TestIndividualService:
         individual_repository.apply_transaction.assert_not_called()
 
     def test_withdraw(self, individual_repository, transaction_repository):
-        withdraw_amount = 7000
+        withdraw_amount = Decimal("7000.00")
 
         client_id = individual_repository.get_client.return_value.id
-        individual_repository.get_client.return_value.balance = 10000
-        individual_repository.get_client.return_value.monthly_income = 10000
+        individual_repository.get_client.return_value.balance = Decimal("10000.00")
+        individual_repository.get_client.return_value.monthly_income = Decimal(
+            "10000.00"
+        )
 
         expected_transaction = CreateTransactionSchema(
             client_id=client_id,
@@ -113,11 +116,13 @@ class TestIndividualService:
     def test_withdraw_insufficient_balance(
         self, individual_repository, transaction_repository
     ):
-        withdraw_amount = 5001
+        withdraw_amount = Decimal("5001.00")
 
         client_id = individual_repository.get_client.return_value.id
-        individual_repository.get_client.return_value.balance = 5000
-        individual_repository.get_client.return_value.monthly_income = 10000
+        individual_repository.get_client.return_value.balance = Decimal("5000.00")
+        individual_repository.get_client.return_value.monthly_income = Decimal(
+            "10000.00"
+        )
 
         service = IndividualService(individual_repository, transaction_repository)
 
@@ -131,11 +136,13 @@ class TestIndividualService:
     def test_withdraw_limit_exceeded(
         self, individual_repository, transaction_repository
     ):
-        withdraw_amount = 7001
+        withdraw_amount = Decimal("7001.00")
 
         client_id = individual_repository.get_client.return_value.id
-        individual_repository.get_client.return_value.balance = 20000
-        individual_repository.get_client.return_value.monthly_income = 10000
+        individual_repository.get_client.return_value.balance = Decimal("20000.00")
+        individual_repository.get_client.return_value.monthly_income = Decimal(
+            "10000.00"
+        )
 
         service = IndividualService(individual_repository, transaction_repository)
 
@@ -150,7 +157,7 @@ class TestIndividualService:
         self, individual_repository, transaction_repository
     ):
         client_id = UUID("01a10d73-56d7-752e-8bce-3b3894824979")
-        withdraw_amount = 1000
+        withdraw_amount = Decimal("1000.00")
 
         individual_repository.get_client.return_value = None
 
@@ -193,3 +200,12 @@ class TestIndividualService:
         individual_repository.get_client.assert_called_once_with(client_id)
 
         transaction_repository.get_statement.assert_not_called()
+
+    def test_calculate_withdraw_limit_rounds_down(
+        self, individual_repository, transaction_repository
+    ):
+        service = IndividualService(individual_repository, transaction_repository)
+
+        withdraw_limit = service.calculate_withdraw_limit(Decimal("1000.05"))
+
+        assert withdraw_limit == Decimal("700.03")

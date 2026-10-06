@@ -1,5 +1,7 @@
+from decimal import Decimal
 from uuid import UUID, uuid7
 
+from sqlalchemy import Numeric
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.custom_types.uuid import UUIDType
@@ -11,7 +13,7 @@ class IndividualTable(Base):
 
     id: Mapped[UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid7)
 
-    monthly_income: Mapped[float]
+    monthly_income: Mapped[Decimal] = mapped_column(Numeric(12, 2))
 
     age: Mapped[int]
 
@@ -23,4 +25,4 @@ class IndividualTable(Base):
 
     category: Mapped[str]
 
-    balance: Mapped[float]
+    balance: Mapped[Decimal] = mapped_column(Numeric(12, 2))
