@@ -1,9 +1,11 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from src.database.connection import DBConnectionHandler
+from src.enum.transaction_type import TransactionType
 from src.exceptions.domain.individual_not_found import IndividualNotFound
+from src.exceptions.domain.insufficient_balance import InsufficientBalance
 from src.models.entities.individual import IndividualTable
 from src.models.entities.transaction import TransactionTable
 from src.models.interfaces.client_repository import ClientRepositoryInterface
@@ -40,16 +42,40 @@ class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
 
             return individual
 
-    def apply_transaction(
-        self, client_id: UUID, new_balance: float, transaction: CreateTransactionSchema
-    ) -> None:
+    def apply_transaction(self, transaction: CreateTransactionSchema) -> None:
         with self.__db_connection.get_session() as session:
-            individual = session.get(IndividualTable, client_id)
+            individual = session.get(IndividualTable, transaction.client_id)
 
             if individual is None:
                 raise IndividualNotFound()
 
-            individual.balance = new_balance
+            stmt = update(IndividualTable).where(
+                IndividualTable.id == transaction.client_id
+            )
+
+            if transaction.transaction_type == TransactionType.WITHDRAW:
+                withdraw_stmt = (
+                    stmt.where(IndividualTable.balance >= transaction.amount)
+                    .values(balance=IndividualTable.balance - transaction.amount)
+                    .returning(IndividualTable.id)
+                )
+
+                updated_id = session.execute(withdraw_stmt).scalar_one_or_none()
+
+                if updated_id is None:
+                    raise InsufficientBalance()
+
+            elif transaction.transaction_type == TransactionType.DEPOSIT:
+                deposit_stmt = stmt.values(
+                    balance=IndividualTable.balance + transaction.amount
+                )
+
+                session.execute(deposit_stmt)
+
+            else:
+                raise ValueError(
+                    f"Unsupported transaction type: {transaction.transaction_type}"
+                )
 
             transaction_data = TransactionTable(
                 client_id=transaction.client_id,

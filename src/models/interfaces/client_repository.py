@@ -17,6 +17,4 @@ class ClientRepositoryInterface(ABC, Generic[Client]):
         pass
 
     @abstractmethod
-    def apply_transaction(
-        self, client_id: UUID, new_balance: float, transaction: CreateTransactionSchema
-    ) -> None: ...
+    def apply_transaction(self, transaction: CreateTransactionSchema) -> None: ...

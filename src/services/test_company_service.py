@@ -48,7 +48,6 @@ class TestCompanyService:
 
     def test_deposit(self, company_repository, transaction_repository):
         deposit_amount = 10000
-        expected_balance = 15000
 
         client_id = company_repository.get_client.return_value.id
         company_repository.get_client.return_value.balance = 5000
@@ -67,7 +66,7 @@ class TestCompanyService:
         company_repository.get_client.assert_called_once_with(client_id)
 
         company_repository.apply_transaction.assert_called_once_with(
-            client_id, expected_balance, expected_transaction
+            expected_transaction
         )
 
     def test_deposit_client_not_found(self, company_repository, transaction_repository):
@@ -87,7 +86,6 @@ class TestCompanyService:
 
     def test_withdraw(self, company_repository, transaction_repository):
         withdraw_amount = 90000
-        expected_balance = 10000
 
         client_id = company_repository.get_client.return_value.id
         company_repository.get_client.return_value.balance = 100000
@@ -106,7 +104,7 @@ class TestCompanyService:
         company_repository.get_client.assert_called_once_with(client_id)
 
         company_repository.apply_transaction.assert_called_once_with(
-            client_id, expected_balance, expected_transaction
+            expected_transaction
         )
 
     def test_withdraw_insufficient_balance(

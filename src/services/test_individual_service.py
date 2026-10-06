@@ -48,7 +48,6 @@ class TestIndividualService:
 
     def test_deposit(self, individual_repository, transaction_repository):
         deposit_amount = 1000
-        expected_balance = 1500
 
         client_id = individual_repository.get_client.return_value.id
         individual_repository.get_client.return_value.balance = 500
@@ -67,7 +66,7 @@ class TestIndividualService:
         individual_repository.get_client.assert_called_once_with(client_id)
 
         individual_repository.apply_transaction.assert_called_once_with(
-            client_id, expected_balance, expected_transaction
+            expected_transaction
         )
 
     def test_deposit_client_not_found(
@@ -89,7 +88,6 @@ class TestIndividualService:
 
     def test_withdraw(self, individual_repository, transaction_repository):
         withdraw_amount = 7000
-        expected_balance = 3000
 
         client_id = individual_repository.get_client.return_value.id
         individual_repository.get_client.return_value.balance = 10000
@@ -109,7 +107,7 @@ class TestIndividualService:
         individual_repository.get_client.assert_called_once_with(client_id)
 
         individual_repository.apply_transaction.assert_called_once_with(
-            client_id, expected_balance, expected_transaction
+            expected_transaction
         )
 
     def test_withdraw_insufficient_balance(

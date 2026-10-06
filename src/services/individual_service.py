@@ -44,8 +44,6 @@ class IndividualService(IndividualServiceInterface):
     def deposit(self, client_id: UUID, amount: float) -> None:
         individual = self.get_client(client_id)
 
-        new_balance = individual.balance + amount
-
         transaction_data = CreateTransactionSchema(
             client_id=individual.id,
             client_type=ClientType.INDIVIDUAL,
@@ -53,9 +51,7 @@ class IndividualService(IndividualServiceInterface):
             amount=amount,
         )
 
-        self.__individual_repository.apply_transaction(
-            client_id, new_balance, transaction_data
-        )
+        self.__individual_repository.apply_transaction(transaction_data)
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
         individual = self.get_client(client_id)
@@ -68,8 +64,6 @@ class IndividualService(IndividualServiceInterface):
         if amount > withdraw_limit:
             raise WithdrawalLimitExceeded
 
-        new_balance = individual.balance - amount
-
         transaction_data = CreateTransactionSchema(
             client_id=individual.id,
             client_type=ClientType.INDIVIDUAL,
@@ -77,9 +71,7 @@ class IndividualService(IndividualServiceInterface):
             amount=amount,
         )
 
-        self.__individual_repository.apply_transaction(
-            client_id, new_balance, transaction_data
-        )
+        self.__individual_repository.apply_transaction(transaction_data)
 
     def statement(self, client_id: UUID) -> list[TransactionTable]:
         self.get_client(client_id)

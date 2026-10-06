@@ -42,8 +42,6 @@ class CompanyService(CompanyServiceInterface):
     def deposit(self, client_id: UUID, amount: float) -> None:
         company = self.get_client(client_id)
 
-        new_balance = company.balance + amount
-
         transaction_data = CreateTransactionSchema(
             client_id=company.id,
             client_type=ClientType.COMPANY,
@@ -51,9 +49,7 @@ class CompanyService(CompanyServiceInterface):
             amount=amount,
         )
 
-        self.__company_repository.apply_transaction(
-            client_id, new_balance, transaction_data
-        )
+        self.__company_repository.apply_transaction(transaction_data)
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
         company = self.get_client(client_id)
@@ -66,8 +62,6 @@ class CompanyService(CompanyServiceInterface):
         if amount > withdraw_limit:
             raise WithdrawalLimitExceeded
 
-        new_balance = company.balance - amount
-
         transaction_data = CreateTransactionSchema(
             client_id=company.id,
             client_type=ClientType.COMPANY,
@@ -75,9 +69,7 @@ class CompanyService(CompanyServiceInterface):
             amount=amount,
         )
 
-        self.__company_repository.apply_transaction(
-            client_id, new_balance, transaction_data
-        )
+        self.__company_repository.apply_transaction(transaction_data)
 
     def statement(self, client_id: UUID) -> list[TransactionTable]:
         self.get_client(client_id)

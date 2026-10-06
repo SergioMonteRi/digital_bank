@@ -1,9 +1,11 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from src.database.connection import DBConnectionHandler
+from src.enum.transaction_type import TransactionType
 from src.exceptions.domain.company_not_found import CompanyNotFound
+from src.exceptions.domain.insufficient_balance import InsufficientBalance
 from src.models.entities.company import CompanyTable
 from src.models.entities.transaction import TransactionTable
 from src.models.interfaces.client_repository import ClientRepositoryInterface
@@ -39,16 +41,38 @@ class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
 
             return company
 
-    def apply_transaction(
-        self, client_id: UUID, new_balance: float, transaction: CreateTransactionSchema
-    ) -> None:
+    def apply_transaction(self, transaction: CreateTransactionSchema) -> None:
         with self.__db_connection.get_session() as session:
-            company = session.get(CompanyTable, client_id)
+            company = session.get(CompanyTable, transaction.client_id)
 
             if company is None:
                 raise CompanyNotFound()
 
-            company.balance = new_balance
+            stmt = update(CompanyTable).where(CompanyTable.id == transaction.client_id)
+
+            if transaction.transaction_type == TransactionType.WITHDRAW:
+                withdraw_stmt = (
+                    stmt.where(CompanyTable.balance >= transaction.amount)
+                    .values(balance=CompanyTable.balance - transaction.amount)
+                    .returning(CompanyTable.id)
+                )
+
+                updated_id = session.execute(withdraw_stmt).scalar_one_or_none()
+
+                if updated_id is None:
+                    raise InsufficientBalance()
+
+            elif transaction.transaction_type == TransactionType.DEPOSIT:
+                deposit_stmt = stmt.values(
+                    balance=CompanyTable.balance + transaction.amount
+                )
+
+                session.execute(deposit_stmt)
+
+            else:
+                raise ValueError(
+                    f"Unsupported transaction type: {transaction.transaction_type}"
+                )
 
             transaction_data = TransactionTable(
                 client_id=transaction.client_id,
