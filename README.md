@@ -11,7 +11,6 @@ O que falta para a API funcionar de ponta a ponta.
 ### Testes
 
 - [ ] Integração com `app.test_client()` e SQLite em memória, cobrindo todas as rotas
-- [ ] Renomear `src/database/connetion_test.py` → `connection_test.py`
 
 ## Melhorias
 
@@ -26,7 +25,6 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 
 ### Banco e consistência
 
-- [ ] Deixar o `DBConnectionHandler` seguro com requisições simultâneas: criar o `sessionmaker` uma vez em `connect_to_db` e trocar `__enter__`/`__exit__` por um método `@contextmanager` com sessão local. Hoje o singleton guarda a sessão em `self.__session`, compartilhada entre threads.
 - [ ] Tornar o saque atômico: o débito do saldo e a criação da transação devem ficar na mesma transação de banco
 - [ ] Evitar condição de corrida no saque (`UPDATE ... SET balance = balance - :amount WHERE id = :id AND balance >= :amount`)
 - [ ] `update_balance` não deveria falhar em silêncio quando o cliente não existe
@@ -47,7 +45,5 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 
 ### Detalhes
 
-- [ ] Adicionar `# pylint: disable=too-many-ancestors` em `UTCDateTime`, como já existe em `UUIDType`
 - [ ] Registrar o `handle_unexpected_error` só fora do modo debug, para não esconder o traceback durante o desenvolvimento
 - [ ] Tirar `debug=True` fixo do `run.py`
-- [ ] Remover o roteiro do curso comentado no final do `run.py` quando o projeto estiver concluído

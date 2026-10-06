@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
 
 from src.database.connection import DBConnectionHandler
 from src.models.entities.company import CompanyTable
@@ -14,28 +13,23 @@ class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
         self.__db_connection = db_connection
 
     def create_client(self, client: CreateCompanySchema) -> CompanyTable:
-        with self.__db_connection as session:
-            try:
-                company_data = CompanyTable(
-                    monthly_revenue=client.monthly_revenue,
-                    company_name=client.company_name,
-                    phone=client.phone,
-                    email=client.email,
-                    category=client.category,
-                    balance=0,
-                )
+        with self.__db_connection.get_session() as session:
+            company_data = CompanyTable(
+                monthly_revenue=client.monthly_revenue,
+                company_name=client.company_name,
+                phone=client.phone,
+                email=client.email,
+                category=client.category,
+                balance=0,
+            )
 
-                session.add(company_data)
-                session.commit()
+            session.add(company_data)
+            session.commit()
 
-                return company_data
-
-            except SQLAlchemyError:
-                session.rollback()
-                raise
+            return company_data
 
     def get_client(self, client_id: UUID) -> CompanyTable | None:
-        with self.__db_connection as session:
+        with self.__db_connection.get_session() as session:
             stmt = select(CompanyTable).where(CompanyTable.id == client_id)
 
             company = session.scalar(stmt)
@@ -43,7 +37,7 @@ class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
             return company
 
     def update_balance(self, client_id: UUID, value: float) -> None:
-        with self.__db_connection as session:
+        with self.__db_connection.get_session() as session:
             company = session.get(CompanyTable, client_id)
 
             if company is not None:

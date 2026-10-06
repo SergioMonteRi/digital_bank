@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
 
 from src.database.connection import DBConnectionHandler
 from src.enum.client_type import ClientType
@@ -15,25 +14,21 @@ class TransactionRepository(TransactionRepositoryInterface):
         self.__db_connection = db_connection
 
     def create_transaction(self, transaction: CreateTransactionSchema):
-        with self.__db_connection as session:
-            try:
-                transaction_data = TransactionTable(
-                    client_id=transaction.client_id,
-                    client_type=transaction.client_type,
-                    transaction_type=transaction.transaction_type,
-                    amount=transaction.amount,
-                )
+        with self.__db_connection.get_session() as session:
+            transaction_data = TransactionTable(
+                client_id=transaction.client_id,
+                client_type=transaction.client_type,
+                transaction_type=transaction.transaction_type,
+                amount=transaction.amount,
+            )
 
-                session.add(transaction_data)
-                session.commit()
+            session.add(transaction_data)
+            session.commit()
 
-                return transaction_data
-            except SQLAlchemyError:
-                session.rollback()
-                raise
+            return transaction_data
 
     def get_statement(self, client_id: UUID, client_type: ClientType):
-        with self.__db_connection as session:
+        with self.__db_connection.get_session() as session:
             stmt = (
                 select(TransactionTable)
                 .where(
