@@ -25,7 +25,6 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 
 ### Banco e consistência
 
-- [ ] Tornar o saque atômico: o débito do saldo e a criação da transação devem ficar na mesma transação de banco
 - [ ] Evitar condição de corrida no saque (`UPDATE ... SET balance = balance - :amount WHERE id = :id AND balance >= :amount`)
 - [ ] `update_balance` não deveria falhar em silêncio quando o cliente não existe
 - [ ] Ler a connection string de variável de ambiente em vez de deixá-la fixa em `connection.py`

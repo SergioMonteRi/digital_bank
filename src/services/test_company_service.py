@@ -66,12 +66,8 @@ class TestCompanyService:
 
         company_repository.get_client.assert_called_once_with(client_id)
 
-        company_repository.update_balance.assert_called_once_with(
-            client_id, expected_balance
-        )
-
-        transaction_repository.create_transaction.assert_called_once_with(
-            expected_transaction
+        company_repository.apply_transaction.assert_called_once_with(
+            client_id, expected_balance, expected_transaction
         )
 
     def test_deposit_client_not_found(self, company_repository, transaction_repository):
@@ -87,9 +83,7 @@ class TestCompanyService:
 
         company_repository.get_client.assert_called_once_with(client_id)
 
-        company_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        company_repository.apply_transaction.assert_not_called()
 
     def test_withdraw(self, company_repository, transaction_repository):
         withdraw_amount = 90000
@@ -111,12 +105,8 @@ class TestCompanyService:
 
         company_repository.get_client.assert_called_once_with(client_id)
 
-        company_repository.update_balance.assert_called_once_with(
-            client_id, expected_balance
-        )
-
-        transaction_repository.create_transaction.assert_called_once_with(
-            expected_transaction
+        company_repository.apply_transaction.assert_called_once_with(
+            client_id, expected_balance, expected_transaction
         )
 
     def test_withdraw_insufficient_balance(
@@ -135,9 +125,7 @@ class TestCompanyService:
 
         company_repository.get_client.assert_called_once_with(client_id)
 
-        company_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        company_repository.apply_transaction.assert_not_called()
 
     def test_withdraw_limit_exceeded(self, company_repository, transaction_repository):
         withdraw_amount = 90001
@@ -153,9 +141,7 @@ class TestCompanyService:
 
         company_repository.get_client.assert_called_once_with(client_id)
 
-        company_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        company_repository.apply_transaction.assert_not_called()
 
     def test_withdraw_client_not_found(
         self, company_repository, transaction_repository
@@ -172,9 +158,7 @@ class TestCompanyService:
 
         company_repository.get_client.assert_called_once_with(client_id)
 
-        company_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        company_repository.apply_transaction.assert_not_called()
 
     def test_statement(self, company_repository, transaction_repository):
         client_id = company_repository.get_client.return_value.id

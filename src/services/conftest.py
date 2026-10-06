@@ -6,6 +6,8 @@ import pytest
 from src.enum.client_type import ClientType
 from src.models.entities.company import CompanyTable
 from src.models.entities.individual import IndividualTable
+from src.models.interfaces.client_repository import ClientRepositoryInterface
+from src.models.interfaces.transaction_repository import TransactionRepositoryInterface
 from src.schemas.create_company_schema import CreateCompanySchema
 from src.schemas.create_individual_schema import CreateIndividualSchema
 
@@ -40,7 +42,7 @@ def fixture_create_company_return_data(company_data):
 
 @pytest.fixture
 def company_repository(company_return_data):
-    company_repository_mock = Mock()
+    company_repository_mock = Mock(spec=ClientRepositoryInterface)
 
     company_repository_mock.create_client.return_value = company_return_data
 
@@ -81,7 +83,7 @@ def fixture_create_individual_return_data(individual_data):
 
 @pytest.fixture
 def individual_repository(individual_return_data):
-    individual_repository_mock = Mock()
+    individual_repository_mock = Mock(spec=ClientRepositoryInterface)
 
     individual_repository_mock.create_client.return_value = individual_return_data
 
@@ -92,7 +94,6 @@ def individual_repository(individual_return_data):
 
 @pytest.fixture
 def transaction_repository():
-    transaction_repository_mock = Mock()
-    transaction_repository_mock.create_transaction.return_value = None
+    transaction_repository_mock = Mock(spec=TransactionRepositoryInterface)
 
     return transaction_repository_mock

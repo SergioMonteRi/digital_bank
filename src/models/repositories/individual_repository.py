@@ -3,9 +3,12 @@ from uuid import UUID
 from sqlalchemy import select
 
 from src.database.connection import DBConnectionHandler
+from src.exceptions.domain.individual_not_found import IndividualNotFound
 from src.models.entities.individual import IndividualTable
+from src.models.entities.transaction import TransactionTable
 from src.models.interfaces.client_repository import ClientRepositoryInterface
 from src.schemas.create_individual_schema import CreateIndividualSchema
+from src.schemas.create_transaction_schema import CreateTransactionSchema
 
 
 class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
@@ -37,10 +40,23 @@ class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
 
             return individual
 
-    def update_balance(self, client_id: UUID, value: float) -> None:
+    def apply_transaction(
+        self, client_id: UUID, new_balance: float, transaction: CreateTransactionSchema
+    ) -> None:
         with self.__db_connection.get_session() as session:
             individual = session.get(IndividualTable, client_id)
 
-            if individual is not None:
-                individual.balance = value
-                session.commit()
+            if individual is None:
+                raise IndividualNotFound()
+
+            individual.balance = new_balance
+
+            transaction_data = TransactionTable(
+                client_id=transaction.client_id,
+                client_type=transaction.client_type,
+                transaction_type=transaction.transaction_type,
+                amount=transaction.amount,
+            )
+
+            session.add(transaction_data)
+            session.commit()

@@ -36,9 +36,6 @@ class CompanyService(CompanyServiceInterface):
 
         return company
 
-    def update_balance(self, client_id: UUID, amount: float) -> None:
-        self.__company_repository.update_balance(client_id, amount)
-
     def calculate_withdraw_limit(self, monthly_revenue: float) -> float:
         return monthly_revenue * self.COMPANY_WITHDRAW_LIMIT
 
@@ -47,8 +44,6 @@ class CompanyService(CompanyServiceInterface):
 
         new_balance = company.balance + amount
 
-        self.update_balance(client_id, new_balance)
-
         transaction_data = CreateTransactionSchema(
             client_id=company.id,
             client_type=ClientType.COMPANY,
@@ -56,7 +51,9 @@ class CompanyService(CompanyServiceInterface):
             amount=amount,
         )
 
-        self.__transaction_repository.create_transaction(transaction_data)
+        self.__company_repository.apply_transaction(
+            client_id, new_balance, transaction_data
+        )
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
         company = self.get_client(client_id)
@@ -71,8 +68,6 @@ class CompanyService(CompanyServiceInterface):
 
         new_balance = company.balance - amount
 
-        self.update_balance(client_id, new_balance)
-
         transaction_data = CreateTransactionSchema(
             client_id=company.id,
             client_type=ClientType.COMPANY,
@@ -80,7 +75,9 @@ class CompanyService(CompanyServiceInterface):
             amount=amount,
         )
 
-        self.__transaction_repository.create_transaction(transaction_data)
+        self.__company_repository.apply_transaction(
+            client_id, new_balance, transaction_data
+        )
 
     def statement(self, client_id: UUID) -> list[TransactionTable]:
         self.get_client(client_id)

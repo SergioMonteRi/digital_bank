@@ -38,9 +38,6 @@ class IndividualService(IndividualServiceInterface):
 
         return individual
 
-    def update_balance(self, client_id: UUID, balance: float) -> None:
-        self.__individual_repository.update_balance(client_id, balance)
-
     def calculate_withdraw_limit(self, monthly_revenue: float) -> float:
         return monthly_revenue * self.INDIVIDUAL_WITHDRAW_LIMIT
 
@@ -49,8 +46,6 @@ class IndividualService(IndividualServiceInterface):
 
         new_balance = individual.balance + amount
 
-        self.update_balance(client_id, new_balance)
-
         transaction_data = CreateTransactionSchema(
             client_id=individual.id,
             client_type=ClientType.INDIVIDUAL,
@@ -58,7 +53,9 @@ class IndividualService(IndividualServiceInterface):
             amount=amount,
         )
 
-        self.__transaction_repository.create_transaction(transaction_data)
+        self.__individual_repository.apply_transaction(
+            client_id, new_balance, transaction_data
+        )
 
     def withdraw(self, client_id: UUID, amount: float) -> None:
         individual = self.get_client(client_id)
@@ -73,8 +70,6 @@ class IndividualService(IndividualServiceInterface):
 
         new_balance = individual.balance - amount
 
-        self.update_balance(client_id, new_balance)
-
         transaction_data = CreateTransactionSchema(
             client_id=individual.id,
             client_type=ClientType.INDIVIDUAL,
@@ -82,7 +77,9 @@ class IndividualService(IndividualServiceInterface):
             amount=amount,
         )
 
-        self.__transaction_repository.create_transaction(transaction_data)
+        self.__individual_repository.apply_transaction(
+            client_id, new_balance, transaction_data
+        )
 
     def statement(self, client_id: UUID) -> list[TransactionTable]:
         self.get_client(client_id)

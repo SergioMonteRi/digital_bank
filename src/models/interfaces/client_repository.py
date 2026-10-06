@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 from uuid import UUID
 
+from src.schemas.create_transaction_schema import CreateTransactionSchema
+
 Client = TypeVar("Client")
 
 
@@ -15,5 +17,6 @@ class ClientRepositoryInterface(ABC, Generic[Client]):
         pass
 
     @abstractmethod
-    def update_balance(self, client_id: UUID, value: float) -> None:
-        pass
+    def apply_transaction(
+        self, client_id: UUID, new_balance: float, transaction: CreateTransactionSchema
+    ) -> None: ...

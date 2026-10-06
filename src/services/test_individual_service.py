@@ -66,12 +66,8 @@ class TestIndividualService:
 
         individual_repository.get_client.assert_called_once_with(client_id)
 
-        individual_repository.update_balance.assert_called_once_with(
-            client_id, expected_balance
-        )
-
-        transaction_repository.create_transaction.assert_called_once_with(
-            expected_transaction
+        individual_repository.apply_transaction.assert_called_once_with(
+            client_id, expected_balance, expected_transaction
         )
 
     def test_deposit_client_not_found(
@@ -89,9 +85,7 @@ class TestIndividualService:
 
         individual_repository.get_client.assert_called_once_with(client_id)
 
-        individual_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        individual_repository.apply_transaction.assert_not_called()
 
     def test_withdraw(self, individual_repository, transaction_repository):
         withdraw_amount = 7000
@@ -114,12 +108,8 @@ class TestIndividualService:
 
         individual_repository.get_client.assert_called_once_with(client_id)
 
-        individual_repository.update_balance.assert_called_once_with(
-            client_id, expected_balance
-        )
-
-        transaction_repository.create_transaction.assert_called_once_with(
-            expected_transaction
+        individual_repository.apply_transaction.assert_called_once_with(
+            client_id, expected_balance, expected_transaction
         )
 
     def test_withdraw_insufficient_balance(
@@ -138,9 +128,7 @@ class TestIndividualService:
 
         individual_repository.get_client.assert_called_once_with(client_id)
 
-        individual_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        individual_repository.apply_transaction.assert_not_called()
 
     def test_withdraw_limit_exceeded(
         self, individual_repository, transaction_repository
@@ -158,9 +146,7 @@ class TestIndividualService:
 
         individual_repository.get_client.assert_called_once_with(client_id)
 
-        individual_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        individual_repository.apply_transaction.assert_not_called()
 
     def test_withdraw_client_not_found(
         self, individual_repository, transaction_repository
@@ -177,9 +163,7 @@ class TestIndividualService:
 
         individual_repository.get_client.assert_called_once_with(client_id)
 
-        individual_repository.update_balance.assert_not_called()
-
-        transaction_repository.create_transaction.assert_not_called()
+        individual_repository.apply_transaction.assert_not_called()
 
     def test_statement(self, individual_repository, transaction_repository):
         client_id = individual_repository.get_client.return_value.id
