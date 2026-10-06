@@ -37,12 +37,6 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 - [ ] Extrair `BaseClientRepository`, porque `get_client` e `update_balance` só mudam na tabela
 - [ ] Corrigir resquícios de copiar e colar no `IndividualRepository` (variáveis chamadas `company`)
 
-### Domínio e validação
-
-- [ ] Usar `Decimal` / `Numeric` para dinheiro em vez de `float` (entidades, schemas e cálculos)
-- [ ] Validar os schemas de criação: `EmailStr`, `age` mínima, `monthly_income` / `monthly_revenue` ≥ 0, strings não vazias
-- [ ] Opcional: `strict=True` no `WithdrawSchema` para recusar `"50.5"` como string
-
 ### Tipagem
 
 - [ ] Parametrizar `ClientRepositoryInterface` nos services (`ClientRepositoryInterface[IndividualTable]`)

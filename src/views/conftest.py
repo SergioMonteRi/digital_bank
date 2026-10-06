@@ -24,7 +24,6 @@ from src.controllers.interfaces.withdraw_controller import WithdrawControllerInt
 @pytest.fixture
 def company_body():
     body = {
-        "category": "COMPANY",
         "company_name": "NewGo",
         "email": "newgo.admin@newgo.com.br",
         "monthly_revenue": 100000,
@@ -37,7 +36,6 @@ def company_body():
 @pytest.fixture
 def individual_body():
     body = {
-        "category": "INDIVIDUAL",
         "full_name": "Maria Silva",
         "age": 30,
         "email": "maria.silva@example.com",

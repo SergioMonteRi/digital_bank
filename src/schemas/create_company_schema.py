@@ -1,11 +1,10 @@
 from decimal import Decimal
 
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from .create_client_base_schema import CreateClientBaseSchema
 
 
-class CreateCompanySchema(BaseModel):
-    monthly_revenue: Decimal = Field(max_digits=12, decimal_places=2)
+class CreateCompanySchema(CreateClientBaseSchema):
+    monthly_revenue: Decimal = Field(max_digits=12, decimal_places=2, ge=0)
     company_name: str
-    phone: str
-    email: str
-    category: str

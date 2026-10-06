@@ -18,7 +18,6 @@ def fixture_create_company_return_data(company_data):
         company_name=company_data.company_name,
         phone=company_data.phone,
         email=company_data.email,
-        category=company_data.category,
         balance=Decimal("0.00"),
     )
 
@@ -45,7 +44,6 @@ def fixture_create_individual_return_data(individual_data):
         full_name=individual_data.full_name,
         phone=individual_data.phone,
         email=individual_data.email,
-        category=individual_data.category,
         balance=Decimal("0.00"),
     )
 

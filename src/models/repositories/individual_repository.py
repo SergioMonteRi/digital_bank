@@ -25,7 +25,6 @@ class IndividualRepository(ClientRepositoryInterface[IndividualTable]):
                 full_name=client.full_name,
                 phone=client.phone,
                 email=client.email,
-                category=client.category,
                 balance=0,
             )
 

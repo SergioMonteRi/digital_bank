@@ -12,5 +12,4 @@ class CompanyResponseSchema(BaseModel):
     monthly_revenue: Decimal
     phone: str
     email: str
-    category: str
     balance: Decimal

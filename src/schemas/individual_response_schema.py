@@ -13,5 +13,4 @@ class IndividualResponseSchema(BaseModel):
     monthly_income: Decimal
     phone: str
     email: str
-    category: str
     balance: Decimal

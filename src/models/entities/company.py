@@ -21,6 +21,4 @@ class CompanyTable(Base):
 
     email: Mapped[str]
 
-    category: Mapped[str]
-
     balance: Mapped[Decimal] = mapped_column(Numeric(12, 2))

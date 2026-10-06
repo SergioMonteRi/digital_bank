@@ -24,7 +24,6 @@ class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
                 company_name=client.company_name,
                 phone=client.phone,
                 email=client.email,
-                category=client.category,
                 balance=0,
             )
 
