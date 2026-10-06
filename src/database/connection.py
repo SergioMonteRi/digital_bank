@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 from contextlib import contextmanager
 
@@ -6,8 +7,8 @@ from sqlalchemy.orm import Session, sessionmaker
 
 
 class DBConnectionHandler:
-    def __init__(self) -> None:
-        self.__connection_string = "sqlite:///storage.db"
+    def __init__(self, connection_string: str) -> None:
+        self.__connection_string = connection_string
         self.__engine: Engine | None = None
         self.__session_maker = None
 
@@ -34,4 +35,9 @@ class DBConnectionHandler:
         return self.__engine
 
 
-db_connection_handler = DBConnectionHandler()
+database_url = os.getenv("DATABASE_URL")
+
+if database_url is None:
+    raise ValueError("Database URL is undefined")
+
+db_connection_handler = DBConnectionHandler(database_url)

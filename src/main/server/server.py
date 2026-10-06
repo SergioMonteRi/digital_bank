@@ -20,7 +20,6 @@ from src.models.entities.transaction import TransactionTable  # noqa: F401
 
 # pylint: enable=unused-import
 
-
 db_connection_handler.connect_to_db()
 
 Base.metadata.create_all(db_connection_handler.get_engine())

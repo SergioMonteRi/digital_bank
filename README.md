@@ -4,6 +4,20 @@ API REST em Flask para clientes pessoa física (`individual`) e pessoa jurídica
 
 Arquitetura em camadas: **routes → views → controllers → services → repositories → entities**.
 
+## Configuração
+
+A connection string do banco vem da variável de ambiente `DATABASE_URL`, que é obrigatória: sem ela, o app não sobe.
+
+Para configurar localmente, copie o exemplo e ajuste o valor se precisar:
+
+```bash
+cp .env.example .env
+```
+
+O `run.py` carrega o `.env` antes de importar o app. O arquivo `.env` não vai para o git.
+
+Nos testes, o `conftest.py` da raiz define a `DATABASE_URL` com um SQLite em memória, então o `.env` não é necessário para rodar o `pytest`.
+
 ## Funcionamento básico
 
 O que falta para a API funcionar de ponta a ponta.
@@ -22,11 +36,6 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 - [ ] Opcional: `__init_subclass__` na base para falhar cedo se uma subclasse esquecer alguma configuração
 - [ ] Extrair `BaseClientRepository`, porque `get_client` e `update_balance` só mudam na tabela
 - [ ] Corrigir resquícios de copiar e colar no `IndividualRepository` (variáveis chamadas `company`)
-
-### Banco e consistência
-
-- [ ] Evitar condição de corrida no saque (`UPDATE ... SET balance = balance - :amount WHERE id = :id AND balance >= :amount`)
-- [ ] Ler a connection string de variável de ambiente em vez de deixá-la fixa em `connection.py`
 
 ### Domínio e validação
 
