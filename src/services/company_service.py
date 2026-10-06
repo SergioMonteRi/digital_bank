@@ -20,7 +20,9 @@ class CompanyService(CompanyServiceInterface):
 
     def __init__(
         self,
-        company_repository: ClientRepositoryInterface,
+        company_repository: ClientRepositoryInterface[
+            CompanyTable, CreateCompanySchema
+        ],
         transaction_repository: TransactionRepositoryInterface,
     ):
         self.__company_repository = company_repository

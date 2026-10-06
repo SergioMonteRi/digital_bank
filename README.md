@@ -37,13 +37,6 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 - [ ] Extrair `BaseClientRepository`, porque `get_client` e `update_balance` só mudam na tabela
 - [ ] Corrigir resquícios de copiar e colar no `IndividualRepository` (variáveis chamadas `company`)
 
-### Tipagem
-
-- [ ] Parametrizar `ClientRepositoryInterface` nos services (`ClientRepositoryInterface[IndividualTable]`)
-- [ ] Tipar o parâmetro `client` de `ClientRepositoryInterface.create_client` (`TypeVar` para o schema)
-- [ ] `get_statement` retorna `Sequence` (de `.all()`), não `list`: converter com `list(...)` ou ajustar a anotação
-- [ ] Renomear o parâmetro `monthly_revenue` de `IndividualService.calculate_withdraw_limit` (o valor recebido é `monthly_income`)
-
 ### Detalhes
 
 - [ ] Registrar o `handle_unexpected_error` só fora do modo debug, para não esconder o traceback durante o desenvolvimento

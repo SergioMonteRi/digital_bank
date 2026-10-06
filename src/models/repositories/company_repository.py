@@ -13,7 +13,7 @@ from src.schemas.create_company_schema import CreateCompanySchema
 from src.schemas.create_transaction_schema import CreateTransactionSchema
 
 
-class CompanyRepository(ClientRepositoryInterface[CompanyTable]):
+class CompanyRepository(ClientRepositoryInterface[CompanyTable, CreateCompanySchema]):
     def __init__(self, db_connection: DBConnectionHandler) -> None:
         self.__db_connection = db_connection
 

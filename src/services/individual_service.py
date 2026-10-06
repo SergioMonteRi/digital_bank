@@ -22,7 +22,9 @@ class IndividualService(IndividualServiceInterface):
 
     def __init__(
         self,
-        individual_repository: ClientRepositoryInterface,
+        individual_repository: ClientRepositoryInterface[
+            IndividualTable, CreateIndividualSchema
+        ],
         transaction_repository: TransactionRepositoryInterface,
     ):
         self.__individual_repository = individual_repository
@@ -39,8 +41,8 @@ class IndividualService(IndividualServiceInterface):
 
         return individual
 
-    def calculate_withdraw_limit(self, monthly_revenue: Decimal) -> Decimal:
-        return (monthly_revenue * self.INDIVIDUAL_WITHDRAW_LIMIT).quantize(
+    def calculate_withdraw_limit(self, monthly_income: Decimal) -> Decimal:
+        return (monthly_income * self.INDIVIDUAL_WITHDRAW_LIMIT).quantize(
             exp=Decimal("0.01"), rounding=ROUND_DOWN
         )
 

@@ -2,14 +2,17 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 from uuid import UUID
 
+from pydantic import BaseModel
+
 from src.schemas.create_transaction_schema import CreateTransactionSchema
 
 Client = TypeVar("Client")
+CreateSchema = TypeVar("CreateSchema", bound=BaseModel)
 
 
-class ClientRepositoryInterface(ABC, Generic[Client]):
+class ClientRepositoryInterface(ABC, Generic[Client, CreateSchema]):
     @abstractmethod
-    def create_client(self, client) -> Client:
+    def create_client(self, client: CreateSchema) -> Client:
         pass
 
     @abstractmethod

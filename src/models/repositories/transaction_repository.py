@@ -12,7 +12,9 @@ class TransactionRepository(TransactionRepositoryInterface):
     def __init__(self, db_connection: DBConnectionHandler) -> None:
         self.__db_connection = db_connection
 
-    def get_statement(self, client_id: UUID, client_type: ClientType):
+    def get_statement(
+        self, client_id: UUID, client_type: ClientType
+    ) -> list[TransactionTable]:
         with self.__db_connection.get_session() as session:
             stmt = (
                 select(TransactionTable)
@@ -25,4 +27,4 @@ class TransactionRepository(TransactionRepositoryInterface):
 
             statements = session.scalars(stmt).all()
 
-            return statements
+            return list(statements)
