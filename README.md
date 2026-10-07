@@ -36,8 +36,3 @@ Pontos que não impedem o funcionamento, mas melhoram a qualidade.
 - [ ] Opcional: `__init_subclass__` na base para falhar cedo se uma subclasse esquecer alguma configuração
 - [ ] Extrair `BaseClientRepository`, porque `get_client` e `update_balance` só mudam na tabela
 - [ ] Corrigir resquícios de copiar e colar no `IndividualRepository` (variáveis chamadas `company`)
-
-### Detalhes
-
-- [ ] Registrar o `handle_unexpected_error` só fora do modo debug, para não esconder o traceback durante o desenvolvimento
-- [ ] Tirar `debug=True` fixo do `run.py`

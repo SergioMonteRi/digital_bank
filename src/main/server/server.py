@@ -20,20 +20,27 @@ from src.models.entities.transaction import TransactionTable  # noqa: F401
 
 # pylint: enable=unused-import
 
-db_connection_handler.connect_to_db()
 
-Base.metadata.create_all(db_connection_handler.get_engine())
+def create_app(config: dict | None = None) -> Flask:
+    db_connection_handler.connect_to_db()
 
+    Base.metadata.create_all(db_connection_handler.get_engine())
 
-app = Flask(__name__)
+    app = Flask(__name__)
 
-CORS(app)
+    if config:
+        app.config.update(config)
 
-app.register_blueprint(individual_routes_bp)
-app.register_blueprint(company_routes_bp)
+    CORS(app)
 
+    app.register_blueprint(individual_routes_bp)
+    app.register_blueprint(company_routes_bp)
 
-app.register_error_handler(HttpError, handle_http_error)
-app.register_error_handler(DomainError, handle_domain_error)
-app.register_error_handler(Exception, handle_unexpected_error)
-app.register_error_handler(HTTPException, handle_werkzeug_error)
+    app.register_error_handler(HttpError, handle_http_error)
+    app.register_error_handler(DomainError, handle_domain_error)
+    app.register_error_handler(HTTPException, handle_werkzeug_error)
+
+    if not app.debug:
+        app.register_error_handler(Exception, handle_unexpected_error)
+
+    return app
